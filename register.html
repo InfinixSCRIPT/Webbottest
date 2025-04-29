@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Kayıt Ol - Maivetse</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0d0d0d;
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .auth-box {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #000;
+      width: 300px;
+    }
+
+    .auth-box h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .auth-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .auth-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .auth-box button:hover {
+      background-color: #444;
+    }
+
+    .auth-box .link {
+      margin-top: 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .auth-box .link a {
+      color: #ccc;
+      text-decoration: underline;
+    }
+
+    .auth-box p {
+      color: red;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-box">
+    <h2>Kayıt Ol</h2>
+    <input type="text" id="newuser" placeholder="Kullanıcı Adı">
+    <input type="password" id="newpass" placeholder="Şifre">
+    <button onclick="register()">Kayıt Ol</button>
+    <p id="error"></p>
+    <div class="link">
+      Hesabın var mı? <a href="login.html">Giriş Yap</a>
+    </div>
+  </div>
+
+  <script>
+    function register() {
+      const user = document.getElementById("newuser").value.trim();
+      const pass = document.getElementById("newpass").value.trim();
+      const error = document.getElementById("error");
+
+      if (user === "" || pass === "") {
+        error.textContent = "Lütfen tüm alanları doldurun.";
+      } else {
+        alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
+        window.location.href = "login.html";
+      }
+    }
+  </script>
+
+</body>
+</html>
