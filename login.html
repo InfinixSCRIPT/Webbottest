@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Giriş Yap - Maivetse</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #0d0d0d; /* Ana sitenle uyumlu arka plan */
+      font-family: Arial, sans-serif;
+      color: white;
+    }
+
+    .auth-box {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #1a1a1a;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px #000;
+      width: 300px;
+    }
+
+    .auth-box h2 {
+      margin-bottom: 20px;
+      font-size: 20px;
+    }
+
+    .auth-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 6px;
+      background-color: #2a2a2a;
+      color: white;
+    }
+
+    .auth-box button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .auth-box button:hover {
+      background-color: #444;
+    }
+
+    .auth-box p {
+      color: red;
+      font-size: 14px;
+    }
+
+    .auth-box .link {
+      margin-top: 10px;
+      font-size: 13px;
+      text-align: center;
+    }
+
+    .auth-box .link a {
+      color: #ccc;
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-box">
+    <h2>Giriş Yap</h2>
+    <input type="text" id="username" placeholder="Kullanıcı Adı">
+    <input type="password" id="password" placeholder="Şifre">
+    <button onclick="login()">Giriş Yap</button>
+    <p id="error"></p>
+    <div class="link">
+      Hesabın yok mu? <a href="register.html">Kayıt Ol</a>
+    </div>
+  </div>
+
+  <script>
+    function login() {
+      const u = document.getElementById("username").value.trim();
+      const p = document.getElementById("password").value.trim();
+      const error = document.getElementById("error");
+
+      if (u === "admin" && p === "1234") {
+        window.location.href = "index.html";
+      } else {
+        error.textContent = "Geçersiz kullanıcı adı veya şifre.";
+      }
+    }
+  </script>
+
+</body>
+</html>
