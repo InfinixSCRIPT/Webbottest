@@ -2,124 +2,88 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Kayıt Ol - Maivetse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kayıt Ol</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background-color: #0d0d0d;
       font-family: Arial, sans-serif;
+      background-color: #121212;
       color: white;
     }
-
-    /* Sağ üst köşe menüsü */
-    .top-menu {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 14px;
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #2e2e2e;
+      border-radius: 10px;
     }
-
-    .top-menu a {
-      color: #ccc;
-      text-decoration: none;
-      margin: 0 10px;
+    h2 {
+      text-align: center;
     }
-
-    .top-menu a:hover {
-      color: #fff;
+    .input-group {
+      margin-bottom: 15px;
     }
-
-    .auth-box {
-      position: absolute;
-      top: 50%;
-      right: 50%;
-      transform: translate(50%, -50%);
-      background-color: #1a1a1a;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #000;
-      width: 300px;
-    }
-
-    .auth-box h2 {
-      margin-bottom: 20px;
-      font-size: 20px;
-    }
-
-    .auth-box input {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      background-color: #2a2a2a;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #333;
       color: white;
     }
-
-    .auth-box button {
+    input[type="submit"] {
       width: 100%;
       padding: 10px;
       background-color: #333;
       border: none;
-      border-radius: 6px;
       color: white;
+      border-radius: 5px;
       cursor: pointer;
-      transition: 0.2s;
     }
-
-    .auth-box button:hover {
+    input[type="submit"]:hover {
       background-color: #444;
     }
-
-    .auth-box .link {
-      margin-top: 10px;
-      font-size: 13px;
+    .login-link {
       text-align: center;
+      margin-top: 10px;
     }
-
-    .auth-box .link a {
-      color: #ccc;
-      text-decoration: underline;
-    }
-
-    .auth-box p {
-      color: red;
-      font-size: 14px;
+    .login-link a {
+      color: #4CAF50;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-
-  <!-- Sağ üst köşe menüsü -->
-  <div class="top-menu">
-    <a href="login.html">Giriş Yap</a>
-    <a href="register.html">Kayıt Ol</a>
-  </div>
-
-  <!-- Kayıt formu -->
-  <div class="auth-box">
+  <div class="container">
     <h2>Kayıt Ol</h2>
-    <input type="text" id="newuser" placeholder="Kullanıcı Adı">
-    <input type="password" id="newpass" placeholder="Şifre">
-    <button onclick="register()">Kayıt Ol</button>
-    <p id="error"></p>
+    <form action="javascript:void(0);" onsubmit="registerUser()">
+      <div class="input-group">
+        <label for="registerUsername">Kullanıcı Adı</label>
+        <input type="text" id="registerUsername" placeholder="Kullanıcı Adınızı Girin" required>
+      </div>
+      <div class="input-group">
+        <label for="registerPassword">Şifre</label>
+        <input type="password" id="registerPassword" placeholder="Şifrenizi Girin" required>
+      </div>
+      <input type="submit" value="Kayıt Ol">
+    </form>
+    <div class="login-link">
+      <p>Zaten hesabınız var mı? <a href="login.html">Giriş Yapın</a></p>
+    </div>
   </div>
 
   <script>
-    function register() {
-      const user = document.getElementById("newuser").value.trim();
-      const pass = document.getElementById("newpass").value.trim();
-      const error = document.getElementById("error");
+    function registerUser() {
+      const username = document.getElementById('registerUsername').value;
+      const password = document.getElementById('registerPassword').value;
 
-      if (user === "" || pass === "") {
-        error.textContent = "Lütfen tüm alanları doldurun.";
-      } else {
-        alert("Kayıt başarılı! Şimdi giriş yapabilirsiniz.");
-        window.location.href = "login.html";
-      }
+      localStorage.setItem('username', username);
+      localStorage.setItem('password', password);
+
+      alert('Başarıyla kayıt oldunuz!');
+      window.location.href = "index.html"; // Kayıt işlemi tamamlandıktan sonra ana sayfaya yönlendir
     }
   </script>
-
 </body>
 </html>
