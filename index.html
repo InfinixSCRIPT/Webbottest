@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>MaivetseWEBBOT1</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+    }
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .header {
+      padding: 15px;
+      background-color: #1e1e1e;
+      text-align: center;
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .message {
+      max-width: 60%;
+      padding: 10px 15px;
+      border-radius: 15px;
+      background-color: black;
+      color: white;
+      word-wrap: break-word;
+    }
+    .user {
+      align-self: flex-end;
+    }
+    .bot {
+      align-self: flex-start;
+    }
+    .input-container {
+      display: flex;
+      padding: 10px;
+      background-color: #1e1e1e;
+    }
+    .input-container input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 10px;
+      margin-right: 10px;
+      background-color: #2e2e2e;
+      color: white;
+    }
+    .input-container button {
+      padding: 10px 15px;
+      border: none;
+      background-color: #333;
+      color: white;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .input-container input:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <div class="header">MaivetseWEBBOT1</div>
+    <div class="messages" id="chatBox"></div>
+    <div class="input-container">
+      <input type="text" id="messageInput" placeholder="Mesaj yaz...">
+      <button onclick="sendMessage()">Gönder</button>
+    </div>
+  </div>
+
+  <script>
+    const badWords = ["p*rno", "s*x", "y**r*k", "porno", "sex", "yarak", "amk", "orospu"];
+
+    const keywordReplies = {
+      // Türkçe
+      "merhaba": "Merhaba!",
+      "nasılsın": "İyiyim, sen nasılsın?",
+      "selam": "Selam! Nasılsın?",
+      "ne haber": "Her şey yolunda, sende ne var ne yok?",
+      "günaydın": "Günaydın! Bugün harika geçsin!",
+      "bir ossarmışım bağırsaklarım koptu": "Selam sana eyyyy imparator!",
+      "ayın kaçı": getTodayDate,
+      "bugün ayın kaçı": getTodayDate,
+      "bugün hangi gün": getTodayDay,
+      "bu ayın kaçıncı günü": getTodayDate,
+      "saat kaç": getCurrentTime,
+      "şu an saat kaç": getCurrentTime,
+
+      // İngilizce
+      "hello": "Hello!",
+      "how are you": "I'm good, how about you?",
+      "good morning": "Good morning! Hope you have a great day!",
+      "hi": "Hi! What's up?",
+      "what day is it": getTodayDay,
+      "what is the date today": getTodayDate,
+      "what time is it": getCurrentTime,
+
+      // Almanca
+      "hallo": "Hallo!",
+      "wie geht's": "Mir geht's gut, und dir?",
+      "guten morgen": "Guten Morgen! Ich wünsche dir einen schönen Tag!",
+      "welcher tag ist heute": getTodayDay,
+      "was ist das datum heute": getTodayDate,
+      "wie spät ist es": getCurrentTime,
+    };
+
+    const drawingKeywords = [
+      "bir resim yap", "bir görsel tasarla", "bir resim oluştur", "görsel çiz",
+      "draw a picture", "make an image", "create a picture", 
+      "zeichne ein bild", "ein bild machen", "bild erstellen"
+    ];
+
+    const codeKeywords = [
+      "kod verir misin", "şu şekilde kod verir misin", "kod paylaş", 
+      "give me code", "can you give code", 
+      "kannst du code geben", "gib mir code"
+    ];
+
+    const songKeywords = [
+      "bir şarkı söyle", "bir şarkı çalabilir misin", "bir şarkı söyler misin",
+      "can you sing a song", "can you play a song", "sing a song",
+      "kannst du ein lied singen", "ein lied spielen"
+    ];
+
+    const songReplies = [
+      "Kuşlar Süt alır. Babalarını bekler. Birlikte kahvaltı yaparlar. Keşke hayat kitaplardaki gibi olsaaa. Beğendiysen farklı şeyler söyleyebilirim belki.",
+      "Bir gün bir balık var her zaman yaşayacak oi oi o. Beğendiysen farklı şeyler söyleyebilirim belki.",
+      "Hayat şaşırtır hep zaten, İnsanlar bu dünyadaki zalimliklerini durdursa ne yaşanacak ki zaten. İnsanlar yaşar bu dünya da uzaylılar da yaşasa. günün anlam ve önemi Sıkıcı bir hayattan ibarettir. Beğendiysen farklı şeyler söyleyebilirim belki."
+    ];
+
+    const songRepliesEn = [
+      "Birds buy milk. They wait for their father. They have breakfast together. I wish life was like in books. If you liked it, maybe I can say more.",
+      "One day, there is a fish that will live forever, oi oi o. If you liked it, maybe I can say more.",
+      "Life always surprises anyway. If people stopped their cruelty in this world, what would be left to live anyway... If you liked it, maybe I can say more."
+    ];
+
+    const songRepliesDe = [
+      "Vögel kaufen Milch. Sie warten auf ihren Vater. Sie frühstücken zusammen. Ich wünschte, das Leben wäre wie in den Büchern. Wenn es dir gefallen hat, kann ich vielleicht mehr sagen.",
+      "Eines Tages gibt es einen Fisch, der für immer leben wird, oi oi o. Wenn es dir gefallen hat, kann ich vielleicht mehr sagen.",
+      "Das Leben überrascht sowieso immer. Wenn die Menschen ihre Grausamkeit auf dieser Welt stoppen würden, was bliebe dann noch zu leben... Wenn es dir gefallen hat, kann ich vielleicht mehr sagen."
+    ];
+
+    const randomReplies = [
+      "Hmm, ilginç söylediklerin.",
+      "Devam et, dinliyorum.",
+      "Cidden mi? Vay canına.",
+      "This is interesting.",
+      "Erzähl mir mehr.",
+      "Anlattıkların enteresan.",
+    ];
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const text = input.value.trim();
+      if (text === '') return;
+
+      addMessage(text, 'user');
+      input.value = '';
+
+      setTimeout(() => {
+        generateBotReply(text.toLowerCase());
+      }, 500);
+    }
+
+    function addMessage(text, sender) {
+      const msgDiv = document.createElement('div');
+      msgDiv.classList.add('message', sender);
+      msgDiv.innerText = text;
+      document.getElementById('chatBox').appendChild(msgDiv);
+      document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+    }
+
+    function generateBotReply(userText) {
+      for (let bad of badWords) {
+        if (userText.includes(bad)) {
+          addMessage("Kardeşim sen bir dahi değilsin, reels izlemeye ara ver.", 'bot');
+          return;
+        }
+      }
+
+      for (let word of drawingKeywords) {
+        if (userText.includes(word)) {
+          addMessage("Üzgünüm, şu anda bu yeteneğe sahip değilim.", 'bot');
+          return;
+        }
+      }
+
+      for (let word of codeKeywords) {
+        if (userText.includes(word)) {
+          addMessage("Üzgünüm, şu anda böyle bir yeteneğim yok.", 'bot');
+          return;
+        }
+      }
+
+      for (let word of songKeywords) {
+        if (userText.includes(word)) {
+          const lang = detectLanguage(userText);
+          let reply = "";
+          if (lang === "tr") reply = songReplies[Math.floor(Math.random() * songReplies.length)];
+          else if (lang === "en") reply = songRepliesEn[Math.floor(Math.random() * songRepliesEn.length)];
+          else if (lang === "de") reply = songRepliesDe[Math.floor(Math.random() * songRepliesDe.length)];
+          else reply = songReplies[Math.floor(Math.random() * songReplies.length)];
+          addMessage(reply, 'bot');
+          return;
+        }
+      }
+
+      for (let key in keywordReplies) {
+        if (userText.includes(key)) {
+          const response = typeof keywordReplies[key] === 'function' ? keywordReplies[key]() : keywordReplies[key];
+          addMessage(response, 'bot');
+          return;
+        }
+      }
+
+      const reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
+      addMessage(reply, 'bot');
+    }
+
+    function detectLanguage(text) {
+      if (text.match(/[çğıöşü]/i)) return "tr";
+      if (text.match(/\b(how|you|can|song|give|code|draw|picture|what|day|date|time)\b/i)) return "en";
+      if (text.match(/\b(wie|kannst|ein|lied|code|bild|welcher|tag|datum|spät)\b/i)) return "de";
+      return "tr";
+    }
+
+    function getTodayDate() {
+      const today = new Date();
+      const day = today.getDate();
+      const month = today.getMonth() + 1;
+      const year = today.getFullYear();
+      return `Bugünün tarihi: ${day}/${month}/${year}`;
+    }
+
+    function getTodayDay() {
+      const daysTr = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+      const daysEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const daysDe = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
+      const today = new Date();
+      const lang = detectLanguage(document.getElementById('messageInput').value.toLowerCase());
+      const dayIndex = today.getDay();
+      if (lang === "tr") return `Bugün günlerden ${daysTr[dayIndex]}.`;
+      if (lang === "en") return `Today is ${daysEn[dayIndex]}.`;
+      if (lang === "de") return `Heute ist ${daysDe[dayIndex]}.`;
+      return `Bugün günlerden ${daysTr[dayIndex]}.`;
+    }
+
+    function getCurrentTime() {
+      const now = new Date();
+      const hours = now.getHours().toString().padStart(2, "0");
+      const minutes = now.getMinutes().toString().padStart(2, "0");
+      return `Şu an saat: ${hours}:${minutes}`;
+    }
+
+    document.getElementById("messageInput").addEventListener("keydown", function(event) {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
