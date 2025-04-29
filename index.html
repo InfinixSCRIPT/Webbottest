@@ -275,5 +275,90 @@
   <div style="position: absolute; top: 20px; right: 20px; z-index: 999;">
   <a href="login.html"><button style="margin-right: 10px; padding: 8px 16px;">Giriş Yap</button></a>
   <a href="register.html"><button style="padding: 8px 16px;">Kayıt Ol</button></a>
-</div>
+    <!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ana Sayfa</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #121212;
+      color: white;
+    }
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #2e2e2e;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .profile {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .profile img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+    .profile h3 {
+      margin-top: 10px;
+      color: #4CAF50;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .button:hover {
+      background-color: #444;
+    }
+  </style>
+</head>
+<body>
+  <!-- Bu kısım, profil sayfası içeriği -->
+  <div class="container">
+    <h2>Hoş Geldiniz</h2>
+    
+    <div class="profile">
+      <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profil Resmi">
+      <h3 id="username"></h3> <!-- Kullanıcı adı burada görünecek -->
+    </div>
+    
+    <button class="button" onclick="logout()">Çıkış Yap</button>
+  </div>
+
+  <script>
+    // Kullanıcı bilgilerini alalım ve ekrana yazdıralım
+    const storedUsername = localStorage.getItem('username');
+
+    if (storedUsername) {
+      document.getElementById('username').innerText = storedUsername;
+    } else {
+      alert('Lütfen giriş yapın');
+      window.location.href = 'login.html';
+    }
+
+    // Çıkış yapma fonksiyonu
+    function logout() {
+      localStorage.removeItem('username');
+      localStorage.removeItem('password');
+      alert('Çıkış yaptınız!');
+      window.location.href = 'login.html'; // Çıkış yapıldığında login sayfasına yönlendir
+    }
+  </script>
+</body>
 </html>
+
