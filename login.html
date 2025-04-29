@@ -2,123 +2,92 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <title>Giriş Yap - Maivetse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giriş Yap</title>
   <style>
     body {
       margin: 0;
-      padding: 0;
-      background-color: #0d0d0d;
       font-family: Arial, sans-serif;
+      background-color: #121212;
       color: white;
     }
-
-    /* Sağ üst köşe menüsü */
-    .top-menu {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      font-size: 14px;
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #2e2e2e;
+      border-radius: 10px;
     }
-
-    .top-menu a {
-      color: #ccc;
-      text-decoration: none;
-      margin: 0 10px;
+    h2 {
+      text-align: center;
     }
-
-    .top-menu a:hover {
-      color: #fff;
+    .input-group {
+      margin-bottom: 15px;
     }
-
-    .auth-box {
-      position: absolute;
-      top: 50%;
-      right: 50%;
-      transform: translate(50%, -50%);
-      background-color: #1a1a1a;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 0 15px #000;
-      width: 300px;
-    }
-
-    .auth-box h2 {
-      margin-bottom: 20px;
-      font-size: 20px;
-    }
-
-    .auth-box input {
+    input[type="text"], input[type="password"] {
       width: 100%;
       padding: 10px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 6px;
-      background-color: #2a2a2a;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #333;
       color: white;
     }
-
-    .auth-box button {
+    input[type="submit"] {
       width: 100%;
       padding: 10px;
       background-color: #333;
       border: none;
-      border-radius: 6px;
       color: white;
+      border-radius: 5px;
       cursor: pointer;
-      transition: 0.2s;
     }
-
-    .auth-box button:hover {
+    input[type="submit"]:hover {
       background-color: #444;
     }
-
-    .auth-box p {
-      color: red;
-      font-size: 14px;
-    }
-
-    .auth-box .link {
-      margin-top: 10px;
-      font-size: 13px;
+    .signup-link {
       text-align: center;
+      margin-top: 10px;
     }
-
-    .auth-box .link a {
-      color: #ccc;
-      text-decoration: underline;
+    .signup-link a {
+      color: #4CAF50;
+      text-decoration: none;
     }
   </style>
 </head>
 <body>
-
-  <!-- Sağ üst köşe menüsü -->
-  <div class="top-menu">
-    <a href="login.html">Giriş Yap</a>
-    <a href="register.html">Kayıt Ol</a>
-  </div>
-
-  <!-- Giriş formu -->
-  <div class="auth-box">
+  <div class="container">
     <h2>Giriş Yap</h2>
-    <input type="text" id="username" placeholder="Kullanıcı Adı">
-    <input type="password" id="password" placeholder="Şifre">
-    <button onclick="login()">Giriş Yap</button>
-    <p id="error"></p>
+    <form action="javascript:void(0);" onsubmit="loginUser()">
+      <div class="input-group">
+        <label for="loginUsername">Kullanıcı Adı</label>
+        <input type="text" id="loginUsername" placeholder="Kullanıcı Adınızı Girin" required>
+      </div>
+      <div class="input-group">
+        <label for="loginPassword">Şifre</label>
+        <input type="password" id="loginPassword" placeholder="Şifrenizi Girin" required>
+      </div>
+      <input type="submit" value="Giriş Yap">
+    </form>
+    <div class="signup-link">
+      <p>Hesabınız yok mu? <a href="register.html">Kayıt Olun</a></p>
+    </div>
   </div>
 
   <script>
-    function login() {
-      const u = document.getElementById("username").value.trim();
-      const p = document.getElementById("password").value.trim();
-      const error = document.getElementById("error");
+    function loginUser() {
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
 
-      if (u === "admin" && p === "1234") {
-        window.location.href = "index.html";
+      const storedUsername = localStorage.getItem('username');
+      const storedPassword = localStorage.getItem('password');
+
+      if (username === storedUsername && password === storedPassword) {
+        alert('Başarıyla giriş yaptınız!');
+        window.location.href = "index.html"; // Ana sayfaya yönlendirme
       } else {
-        error.textContent = "Geçersiz kullanıcı adı veya şifre.";
+        alert('Kullanıcı adı veya şifre hatalı!');
       }
     }
   </script>
-
 </body>
 </html>
