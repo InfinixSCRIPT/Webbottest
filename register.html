@@ -12,10 +12,29 @@
       color: white;
     }
 
-    .auth-box {
+    /* Sağ üst köşe menüsü */
+    .top-menu {
       position: absolute;
       top: 20px;
       right: 20px;
+      font-size: 14px;
+    }
+
+    .top-menu a {
+      color: #ccc;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    .top-menu a:hover {
+      color: #fff;
+    }
+
+    .auth-box {
+      position: absolute;
+      top: 50%;
+      right: 50%;
+      transform: translate(50%, -50%);
       background-color: #1a1a1a;
       padding: 30px;
       border-radius: 12px;
@@ -72,15 +91,19 @@
 </head>
 <body>
 
+  <!-- Sağ üst köşe menüsü -->
+  <div class="top-menu">
+    <a href="login.html">Giriş Yap</a>
+    <a href="register.html">Kayıt Ol</a>
+  </div>
+
+  <!-- Kayıt formu -->
   <div class="auth-box">
     <h2>Kayıt Ol</h2>
     <input type="text" id="newuser" placeholder="Kullanıcı Adı">
     <input type="password" id="newpass" placeholder="Şifre">
     <button onclick="register()">Kayıt Ol</button>
     <p id="error"></p>
-    <div class="link">
-      Hesabın var mı? <a href="login.html">Giriş Yap</a>
-    </div>
   </div>
 
   <script>
