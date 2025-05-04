@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MaivetseWEBBOT1</title>
   <style>
     body {
@@ -69,6 +70,43 @@
     .input-container input:focus {
       outline: none;
     }
+    .container {
+      max-width: 400px;
+      margin: 100px auto;
+      padding: 20px;
+      background-color: #2e2e2e;
+      border-radius: 10px;
+    }
+    h2 {
+      text-align: center;
+    }
+    .profile {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .profile img {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background-color: #fff;
+    }
+    .profile h3 {
+      margin-top: 10px;
+      color: #4CAF50;
+    }
+    .button {
+      width: 100%;
+      padding: 10px;
+      background-color: #333;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .button:hover {
+      background-color: #444;
+    }
   </style>
 </head>
 <body>
@@ -79,6 +117,22 @@
       <input type="text" id="messageInput" placeholder="Mesaj yaz...">
       <button onclick="sendMessage()">Gönder</button>
     </div>
+  </div>
+
+  <div style="position: absolute; top: 20px; right: 20px; z-index: 999;">
+    <a href="login.html"><button style="margin-right: 10px; padding: 8px 16px;">Giriş Yap</button></a>
+    <a href="register.html"><button style="padding: 8px 16px;">Kayıt Ol</button></a>
+  </div>
+
+  <div class="container">
+    <h2>Hoş Geldiniz</h2>
+    
+    <div class="profile">
+      <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profil Resmi">
+      <h3 id="username"></h3> <!-- Kullanıcı adı burada görünecek -->
+    </div>
+    
+    <button class="button" onclick="logout()">Çıkış Yap</button>
   </div>
 
   <script>
@@ -184,181 +238,59 @@
     }
 
     function generateBotReply(userText) {
-      for (let bad of badWords) {
-        if (userText.includes(bad)) {
-          addMessage("Kardeşim sen bir dahi değilsin, reels izlemeye ara ver.", 'bot');
-          return;
-        }
-      }
+      let reply = "Üzgünüm, anlamadım.";
 
-      for (let word of drawingKeywords) {
-        if (userText.includes(word)) {
-          addMessage("Üzgünüm, şu anda bu yeteneğe sahip değilim.", 'bot');
-          return;
-        }
-      }
-
-      for (let word of codeKeywords) {
-        if (userText.includes(word)) {
-          addMessage("Üzgünüm, şu anda böyle bir yeteneğim yok.", 'bot');
-          return;
-        }
-      }
-
-      for (let word of songKeywords) {
-        if (userText.includes(word)) {
-          const lang = detectLanguage(userText);
-          let reply = "";
-          if (lang === "tr") reply = songReplies[Math.floor(Math.random() * songReplies.length)];
-          else if (lang === "en") reply = songRepliesEn[Math.floor(Math.random() * songRepliesEn.length)];
-          else if (lang === "de") reply = songRepliesDe[Math.floor(Math.random() * songRepliesDe.length)];
-          else reply = songReplies[Math.floor(Math.random() * songReplies.length)];
-          addMessage(reply, 'bot');
-          return;
-        }
-      }
-
-      for (let key in keywordReplies) {
+      for (const key in keywordReplies) {
         if (userText.includes(key)) {
-          const response = typeof keywordReplies[key] === 'function' ? keywordReplies[key]() : keywordReplies[key];
-          addMessage(response, 'bot');
-          return;
+          if (typeof keywordReplies[key] === 'function') {
+            reply = keywordReplies[key]();
+          } else {
+            reply = keywordReplies[key];
+          }
+          break;
         }
       }
 
-      const reply = randomReplies[Math.floor(Math.random() * randomReplies.length)];
-      addMessage(reply, 'bot');
-    }
+      if (drawingKeywords.some(keyword => userText.includes(keyword))) {
+        reply = "Bir resim çizmeyi düşünüyorum...";
+      }
 
-    function detectLanguage(text) {
-      if (text.match(/[çğıöşü]/i)) return "tr";
-      if (text.match(/\b(how|you|can|song|give|code|draw|picture|what|day|date|time)\b/i)) return "en";
-      if (text.match(/\b(wie|kannst|ein|lied|code|bild|welcher|tag|datum|spät)\b/i)) return "de";
-      return "tr";
+      if (codeKeywords.some(keyword => userText.includes(keyword))) {
+        reply = "Kod verebilirim.";
+      }
+
+      if (songKeywords.some(keyword => userText.includes(keyword))) {
+        const lang = userText.match(/[a-zA-Z]/) ? "en" : userText.match(/[çşğüöı]/) ? "tr" : "de";
+        if (lang === "tr") {
+          reply = songReplies[Math.floor(Math.random() * songReplies.length)];
+        } else if (lang === "en") {
+          reply = songRepliesEn[Math.floor(Math.random() * songRepliesEn.length)];
+        } else {
+          reply = songRepliesDe[Math.floor(Math.random() * songRepliesDe.length)];
+        }
+      }
+
+      addMessage(reply, 'bot');
     }
 
     function getTodayDate() {
       const today = new Date();
-      const day = today.getDate();
-      const month = today.getMonth() + 1;
-      const year = today.getFullYear();
-      return `Bugünün tarihi: ${day}/${month}/${year}`;
+      return today.toLocaleDateString('tr-TR');
     }
 
     function getTodayDay() {
-      const daysTr = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
-      const daysEn = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-      const daysDe = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
       const today = new Date();
-      const lang = detectLanguage(document.getElementById('messageInput').value.toLowerCase());
-      const dayIndex = today.getDay();
-      if (lang === "tr") return `Bugün günlerden ${daysTr[dayIndex]}.`;
-      if (lang === "en") return `Today is ${daysEn[dayIndex]}.`;
-      if (lang === "de") return `Heute ist ${daysDe[dayIndex]}.`;
-      return `Bugün günlerden ${daysTr[dayIndex]}.`;
+      return today.toLocaleDateString('tr-TR', { weekday: 'long' });
     }
 
     function getCurrentTime() {
       const now = new Date();
-      const hours = now.getHours().toString().padStart(2, "0");
-      const minutes = now.getMinutes().toString().padStart(2, "0");
-      return `Şu an saat: ${hours}:${minutes}`;
+      return now.toLocaleTimeString();
     }
 
-    document.getElementById("messageInput").addEventListener("keydown", function(event) {
-      if (event.key === "Enter") {
-        sendMessage();
-      }
-    });
-  </script>
-</body>
-  <div style="position: absolute; top: 20px; right: 20px; z-index: 999;">
-  <a href="login.html"><button style="margin-right: 10px; padding: 8px 16px;">Giriş Yap</button></a>
-  <a href="register.html"><button style="padding: 8px 16px;">Kayıt Ol</button></a>
-    <!DOCTYPE html>
-<html lang="tr">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ana Sayfa</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background-color: #121212;
-      color: white;
-    }
-    .container {
-      max-width: 400px;
-      margin: 100px auto;
-      padding: 20px;
-      background-color: #2e2e2e;
-      border-radius: 10px;
-    }
-    h2 {
-      text-align: center;
-    }
-    .profile {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .profile img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: #fff;
-    }
-    .profile h3 {
-      margin-top: 10px;
-      color: #4CAF50;
-    }
-    .button {
-      width: 100%;
-      padding: 10px;
-      background-color: #333;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .button:hover {
-      background-color: #444;
-    }
-  </style>
-</head>
-<body>
-  <!-- Bu kısım, profil sayfası içeriği -->
-  <div class="container">
-    <h2>Hoş Geldiniz</h2>
-    
-    <div class="profile">
-      <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profil Resmi">
-      <h3 id="username"></h3> <!-- Kullanıcı adı burada görünecek -->
-    </div>
-    
-    <button class="button" onclick="logout()">Çıkış Yap</button>
-  </div>
-
-  <script>
-    // Kullanıcı bilgilerini alalım ve ekrana yazdıralım
-    const storedUsername = localStorage.getItem('username');
-
-    if (storedUsername) {
-      document.getElementById('username').innerText = storedUsername;
-    } else {
-      alert('Lütfen giriş yapın');
-      window.location.href = 'login.html';
-    }
-
-    // Çıkış yapma fonksiyonu
     function logout() {
-      localStorage.removeItem('username');
-      localStorage.removeItem('password');
-      alert('Çıkış yaptınız!');
-      window.location.href = 'login.html'; // Çıkış yapıldığında login sayfasına yönlendir
+      window.location.href = "login.html";
     }
   </script>
 </body>
 </html>
-
