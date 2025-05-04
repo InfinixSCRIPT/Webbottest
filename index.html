@@ -165,7 +165,6 @@
     let isLoggedIn = false;
 
     function login() {
-      // Örnek olarak kullanıcı ismi alınıyor
       const username = prompt("Kullanıcı adınızı girin:");
       if (username) {
         isLoggedIn = true;
@@ -177,7 +176,6 @@
     }
 
     function signup() {
-      // Kaydolma işlemi
       const username = prompt("Kullanıcı adı seçin:");
       if (username) {
         alert(`${username} adıyla kaydoldunuz!`);
@@ -197,7 +195,15 @@
       if (message) {
         addMessage(message, 'user');
         messageInput.value = '';
-        simulateBotResponse(message);
+
+        const lowerMessage = message.toLowerCase();
+
+        // Anahtar kelime eşleşmeleri
+        if (lowerMessage.includes("bir ossarmışım bağırsaklarım koptu")) {
+          setTimeout(() => {
+            addMessage("Selam sana eyyyyy imparator! Selam sana eyyyy imparator!!!!! Selam sana Selam sana!", 'bot');
+          }, 500);
+        }
       }
     }
 
@@ -207,29 +213,6 @@
       messageDiv.textContent = message;
       document.getElementById("chatBox").appendChild(messageDiv);
       document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
-    }
-
-    function simulateBotResponse(userMessage) {
-      const response = getBotResponse(userMessage);
-      setTimeout(() => {
-        addMessage(response, 'bot');
-      }, 1000);
-    }
-
-    function getBotResponse(userMessage) {
-      const randomResponses = [
-        "Evet, ne hakkında konuşmak istersiniz?",
-        "Bunu ilginç buldum, başka bir şey denemek ister misiniz?",
-        "Hmm, bu konuda biraz araştırma yapmam gerekebilir.",
-        "Merhaba! Yardım edebilir miyim?",
-        "Belki şarkı söylememi ister misiniz?"
-      ];
-
-      if (userMessage.toLowerCase().includes("şarkı söyle")) {
-        return "🎶 Tabii, işte bir şarkı 🎤: 'Bir zamanlar bir hayalim vardı...'";
-      }
-
-      return randomResponses[Math.floor(Math.random() * randomResponses.length)];
     }
 
     function checkEnter(event) {
