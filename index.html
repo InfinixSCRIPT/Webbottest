@@ -133,6 +133,18 @@
   <script>
     let isLoggedIn = false;
 
+    const unknownResponses = [
+      "Hmmm İlginç söylediklerin.",
+      "öyle mi vay canına!",
+      "Biraz araştırmam gerek.",
+      "Bana biraz daha bilgi verebilir misin.",
+      "Maivetse Türkiye Tabanlı kurucusu Infinix Hot olan bir web sitesidir.",
+      "söylediklerinden birşey çıkaramadım şarkı söylememi ister misin?",
+      "Üzgünüm şuanda bu yeteneğim bulunmamaktadır.",
+      "Sayılar şöyle sıralanabilir 1 2 3 4 5 6 7 8 9 10 (...)",
+      "daha fazla sayı saymamı ister misin?"
+    ];
+
     function login() {
       const username = prompt("Kullanıcı adınızı girin:");
       if (username) {
@@ -176,13 +188,9 @@
         "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
       ];
 
-      // Anahtar kelimelere göre yanıtlar
       let response = "";
 
-      if (
-        lower.includes("bir ossarmışım bağırsaklarım koptu") ||
-        lower.includes("Bir ossarmışım bağırsaklarım koptu")
-      ) {
+      if (lower.includes("bir ossarmışım bağırsaklarım koptu")) {
         response = "Selam sana eyyyyy imparator! Selam sana eyyyy imparator!!!!! Selam sana Selam sana!";
       } else if (lower.includes("bugün günlerden ne")) {
         response = `Bugün günlerden ${days[now.getDay()]}.`;
@@ -194,6 +202,9 @@
         response = `Şu an ${months[now.getMonth()]} ayındayız.`;
       } else if (lower.includes("ayın kaçıncı günü")) {
         response = `Bugün ayın ${now.getDate()}. günü.`;
+      } else {
+        // Rastgele bilinmeyen cevaplardan biri
+        response = unknownResponses[Math.floor(Math.random() * unknownResponses.length)];
       }
 
       if (response) {
