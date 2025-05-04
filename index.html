@@ -107,6 +107,35 @@
     .button:hover {
       background-color: #444;
     }
+    .auth-buttons {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 20px;
+    }
+    .auth-button {
+      padding: 10px 15px;
+      background-color: #333;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      width: 45%;
+    }
+    .auth-button:hover {
+      background-color: #444;
+    }
+    .auth-button:disabled {
+      background-color: #777;
+      cursor: not-allowed;
+    }
+    #userInfo {
+      display: none;
+      text-align: center;
+    }
+    #logoutButton {
+      display: none;
+      background-color: #b22222;
+    }
   </style>
 </head>
 <body>
@@ -114,182 +143,74 @@
     <div class="header">MaivetseWEBBOT1</div>
     <div class="messages" id="chatBox"></div>
     <div class="input-container">
-      <input type="text" id="messageInput" placeholder="Mesaj yaz...">
+      <input type="text" id="messageInput" placeholder="Mesaj yaz..." onkeydown="checkEnter(event)">
       <button onclick="sendMessage()">Gönder</button>
     </div>
   </div>
 
-  <div style="position: absolute; top: 20px; right: 20px; z-index: 999;">
-    <a href="login.html"><button style="margin-right: 10px; padding: 8px 16px;">Giriş Yap</button></a>
-    <a href="register.html"><button style="padding: 8px 16px;">Kayıt Ol</button></a>
-  </div>
-
   <div class="container">
-    <h2>Hoş Geldiniz</h2>
-    
-    <div class="profile">
-      <img src="https://www.w3schools.com/w3images/avatar2.png" alt="Profil Resmi">
-      <h3 id="username"></h3> <!-- Kullanıcı adı burada görünecek -->
+    <h2>Giriş Yap / Kaydol</h2>
+    <div class="auth-buttons" id="authButtons">
+      <button class="auth-button" id="loginButton" onclick="login()">Giriş Yap</button>
+      <button class="auth-button" id="signupButton" onclick="signup()">Kaydol</button>
     </div>
-    
-    <button class="button" onclick="logout()">Çıkış Yap</button>
+    <div id="userInfo">
+      <h3 id="userName"></h3>
+      <button class="auth-button" id="logoutButton" onclick="logout()">Çıkış Yap</button>
+    </div>
   </div>
 
   <script>
-    const badWords = ["p*rno", "s*x", "y**r*k", "porno", "sex", "yarak", "amk", "orospu"];
+    let isLoggedIn = false;
 
-    const keywordReplies = {
-      // Türkçe
-      "merhaba": "Merhaba!",
-      "nasılsın": "İyiyim, sen nasılsın?",
-      "selam": "Selam! Nasılsın?",
-      "ne haber": "Her şey yolunda, sende ne var ne yok?",
-      "günaydın": "Günaydın! Bugün harika geçsin!",
-      "bir ossarmışım bağırsaklarım koptu": "Selam sana eyyyy imparator!",
-      "ayın kaçı": getTodayDate,
-      "bugün ayın kaçı": getTodayDate,
-      "bugün hangi gün": getTodayDay,
-      "bu ayın kaçıncı günü": getTodayDate,
-      "saat kaç": getCurrentTime,
-      "şu an saat kaç": getCurrentTime,
-
-      // İngilizce
-      "hello": "Hello!",
-      "how are you": "I'm good, how about you?",
-      "good morning": "Good morning! Hope you have a great day!",
-      "hi": "Hi! What's up?",
-      "what day is it": getTodayDay,
-      "what is the date today": getTodayDate,
-      "what time is it": getCurrentTime,
-
-      // Almanca
-      "hallo": "Hallo!",
-      "wie geht's": "Mir geht's gut, und dir?",
-      "guten morgen": "Guten Morgen! Ich wünsche dir einen schönen Tag!",
-      "welcher tag ist heute": getTodayDay,
-      "was ist das datum heute": getTodayDate,
-      "wie spät ist es": getCurrentTime,
-    };
-
-    const drawingKeywords = [
-      "bir resim yap", "bir görsel tasarla", "bir resim oluştur", "görsel çiz",
-      "draw a picture", "make an image", "create a picture", 
-      "zeichne ein bild", "ein bild machen", "bild erstellen"
-    ];
-
-    const codeKeywords = [
-      "kod verir misin", "şu şekilde kod verir misin", "kod paylaş", 
-      "give me code", "can you give code", 
-      "kannst du code geben", "gib mir code"
-    ];
-
-    const songKeywords = [
-      "bir şarkı söyle", "bir şarkı çalabilir misin", "bir şarkı söyler misin",
-      "can you sing a song", "can you play a song", "sing a song",
-      "kannst du ein lied singen", "ein lied spielen"
-    ];
-
-    const songReplies = [
-      "Kuşlar Süt alır. Babalarını bekler. Birlikte kahvaltı yaparlar. Keşke hayat kitaplardaki gibi olsaaa. Beğendiysen farklı şeyler söyleyebilirim belki.",
-      "Bir gün bir balık var her zaman yaşayacak oi oi o. Beğendiysen farklı şeyler söyleyebilirim belki.",
-      "Hayat şaşırtır hep zaten, İnsanlar bu dünyadaki zalimliklerini durdursa ne yaşanacak ki zaten. İnsanlar yaşar bu dünya da uzaylılar da yaşasa. günün anlam ve önemi Sıkıcı bir hayattan ibarettir. Beğendiysen farklı şeyler söyleyebilirim belki."
-    ];
-
-    const songRepliesEn = [
-      "Birds buy milk. They wait for their father. They have breakfast together. I wish life was like in books. If you liked it, maybe I can say more.",
-      "One day, there is a fish that will live forever, oi oi o. If you liked it, maybe I can say more.",
-      "Life always surprises anyway. If people stopped their cruelty in this world, what would be left to live anyway... If you liked it, maybe I can say more."
-    ];
-
-    const songRepliesDe = [
-      "Vögel kaufen Milch. Sie warten auf ihren Vater. Sie frühstücken zusammen. Ich wünschte, das Leben wäre wie in den Büchern. Wenn es dir gefallen hat, kann ich vielleicht mehr sagen.",
-      "Eines Tages gibt es einen Fisch, der für immer leben wird, oi oi o. Wenn es dir gefallen hat, kann ich vielleicht mehr sagen.",
-      "Das Leben überrascht sowieso immer. Wenn die Menschen ihre Grausamkeit auf dieser Welt stoppen würden, was bliebe dann noch zu leben... Wenn es dir gefallen hat, kann ich vielleicht mehr sagen."
-    ];
-
-    const randomReplies = [
-      "Hmm, ilginç söylediklerin.",
-      "Devam et, dinliyorum.",
-      "Cidden mi? Vay canına.",
-      "This is interesting.",
-      "Erzähl mir mehr.",
-      "Anlattıkların enteresan.",
-    ];
-
-    function sendMessage() {
-      const input = document.getElementById('messageInput');
-      const text = input.value.trim();
-      if (text === '') return;
-
-      addMessage(text, 'user');
-      input.value = '';
-
-      setTimeout(() => {
-        generateBotReply(text.toLowerCase());
-      }, 500);
-    }
-
-    function addMessage(text, sender) {
-      const msgDiv = document.createElement('div');
-      msgDiv.classList.add('message', sender);
-      msgDiv.innerText = text;
-      document.getElementById('chatBox').appendChild(msgDiv);
-      document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
-    }
-
-    function generateBotReply(userText) {
-      let reply = "Üzgünüm, anlamadım.";
-
-      for (const key in keywordReplies) {
-        if (userText.includes(key)) {
-          if (typeof keywordReplies[key] === 'function') {
-            reply = keywordReplies[key]();
-          } else {
-            reply = keywordReplies[key];
-          }
-          break;
-        }
+    function login() {
+      // Örnek olarak kullanıcı ismi alınıyor
+      const username = prompt("Kullanıcı adınızı girin:");
+      if (username) {
+        isLoggedIn = true;
+        document.getElementById("authButtons").style.display = "none";
+        document.getElementById("userInfo").style.display = "block";
+        document.getElementById("userName").textContent = `Hoş geldiniz, ${username}!`;
+        document.getElementById("logoutButton").style.display = "inline-block";
       }
-
-      if (drawingKeywords.some(keyword => userText.includes(keyword))) {
-        reply = "Bir resim çizmeyi düşünüyorum...";
-      }
-
-      if (codeKeywords.some(keyword => userText.includes(keyword))) {
-        reply = "Kod verebilirim.";
-      }
-
-      if (songKeywords.some(keyword => userText.includes(keyword))) {
-        const lang = userText.match(/[a-zA-Z]/) ? "en" : userText.match(/[çşğüöı]/) ? "tr" : "de";
-        if (lang === "tr") {
-          reply = songReplies[Math.floor(Math.random() * songReplies.length)];
-        } else if (lang === "en") {
-          reply = songRepliesEn[Math.floor(Math.random() * songRepliesEn.length)];
-        } else {
-          reply = songRepliesDe[Math.floor(Math.random() * songRepliesDe.length)];
-        }
-      }
-
-      addMessage(reply, 'bot');
     }
 
-    function getTodayDate() {
-      const today = new Date();
-      return today.toLocaleDateString('tr-TR');
-    }
-
-    function getTodayDay() {
-      const today = new Date();
-      return today.toLocaleDateString('tr-TR', { weekday: 'long' });
-    }
-
-    function getCurrentTime() {
-      const now = new Date();
-      return now.toLocaleTimeString();
+    function signup() {
+      // Kaydolma işlemi
+      const username = prompt("Kullanıcı adı seçin:");
+      if (username) {
+        alert(`${username} adıyla kaydoldunuz!`);
+      }
     }
 
     function logout() {
-      window.location.href = "login.html";
+      isLoggedIn = false;
+      document.getElementById("authButtons").style.display = "block";
+      document.getElementById("userInfo").style.display = "none";
+      document.getElementById("logoutButton").style.display = "none";
+    }
+
+    function sendMessage() {
+      const messageInput = document.getElementById("messageInput");
+      const message = messageInput.value.trim();
+      if (message) {
+        addMessage(message, 'user');
+        messageInput.value = '';
+      }
+    }
+
+    function addMessage(message, sender) {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", sender);
+      messageDiv.textContent = message;
+      document.getElementById("chatBox").appendChild(messageDiv);
+      document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
+    }
+
+    function checkEnter(event) {
+      if (event.key === 'Enter') {
+        sendMessage();
+      }
     }
   </script>
 </body>
