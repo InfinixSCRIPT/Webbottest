@@ -81,33 +81,6 @@
     h2 {
       text-align: center;
     }
-    .profile {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    .profile img {
-      width: 150px;
-      height: 150px;
-      border-radius: 50%;
-      background-color: #fff;
-    }
-    .profile h3 {
-      margin-top: 10px;
-      color: #4CAF50;
-    }
-    .button {
-      width: 100%;
-      padding: 10px;
-      background-color: #333;
-      border: none;
-      color: white;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-    .button:hover {
-      background-color: #444;
-    }
     .auth-buttons {
       display: flex;
       justify-content: space-between;
@@ -124,10 +97,6 @@
     }
     .auth-button:hover {
       background-color: #444;
-    }
-    .auth-button:disabled {
-      background-color: #777;
-      cursor: not-allowed;
     }
     #userInfo {
       display: none;
@@ -152,8 +121,8 @@
   <div class="container">
     <h2>Giriş Yap / Kaydol</h2>
     <div class="auth-buttons" id="authButtons">
-      <button class="auth-button" id="loginButton" onclick="login()">Giriş Yap</button>
-      <button class="auth-button" id="signupButton" onclick="signup()">Kaydol</button>
+      <button class="auth-button" onclick="login()">Giriş Yap</button>
+      <button class="auth-button" onclick="signup()">Kaydol</button>
     </div>
     <div id="userInfo">
       <h3 id="userName"></h3>
@@ -192,18 +161,43 @@
     function sendMessage() {
       const messageInput = document.getElementById("messageInput");
       const message = messageInput.value.trim();
-      if (message) {
-        addMessage(message, 'user');
-        messageInput.value = '';
+      if (!message) return;
 
-        const lowerMessage = message.toLowerCase();
+      addMessage(message, 'user');
+      messageInput.value = '';
 
-        // Anahtar kelime eşleşmeleri
-        if (lowerMessage.includes("bir ossarmışım bağırsaklarım koptu")) {
-          setTimeout(() => {
-            addMessage("Selam sana eyyyyy imparator! Selam sana eyyyy imparator!!!!! Selam sana Selam sana!", 'bot');
-          }, 500);
-        }
+      const lower = message.toLowerCase();
+
+      // Tarih ve zaman verileri
+      const now = new Date();
+      const days = ["Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"];
+      const months = [
+        "Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran",
+        "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"
+      ];
+
+      // Anahtar kelimelere göre yanıtlar
+      let response = "";
+
+      if (
+        lower.includes("bir ossarmışım bağırsaklarım koptu") ||
+        lower.includes("Bir ossarmışım bağırsaklarım koptu")
+      ) {
+        response = "Selam sana eyyyyy imparator! Selam sana eyyyy imparator!!!!! Selam sana Selam sana!";
+      } else if (lower.includes("bugün günlerden ne")) {
+        response = `Bugün günlerden ${days[now.getDay()]}.`;
+      } else if (lower.includes("saat kaç")) {
+        response = `Şu an saat ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}.`;
+      } else if (lower.includes("hangi yıldayız")) {
+        response = `Şu anda ${now.getFullYear()} yılındayız.`;
+      } else if (lower.includes("hangi aydayız")) {
+        response = `Şu an ${months[now.getMonth()]} ayındayız.`;
+      } else if (lower.includes("ayın kaçıncı günü")) {
+        response = `Bugün ayın ${now.getDate()}. günü.`;
+      }
+
+      if (response) {
+        setTimeout(() => addMessage(response, 'bot'), 500);
       }
     }
 
