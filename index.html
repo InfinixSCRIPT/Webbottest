@@ -197,6 +197,7 @@
       if (message) {
         addMessage(message, 'user');
         messageInput.value = '';
+        simulateBotResponse(message);
       }
     }
 
@@ -206,6 +207,29 @@
       messageDiv.textContent = message;
       document.getElementById("chatBox").appendChild(messageDiv);
       document.getElementById("chatBox").scrollTop = document.getElementById("chatBox").scrollHeight;
+    }
+
+    function simulateBotResponse(userMessage) {
+      const response = getBotResponse(userMessage);
+      setTimeout(() => {
+        addMessage(response, 'bot');
+      }, 1000);
+    }
+
+    function getBotResponse(userMessage) {
+      const randomResponses = [
+        "Evet, ne hakkında konuşmak istersiniz?",
+        "Bunu ilginç buldum, başka bir şey denemek ister misiniz?",
+        "Hmm, bu konuda biraz araştırma yapmam gerekebilir.",
+        "Merhaba! Yardım edebilir miyim?",
+        "Belki şarkı söylememi ister misiniz?"
+      ];
+
+      if (userMessage.toLowerCase().includes("şarkı söyle")) {
+        return "🎶 Tabii, işte bir şarkı 🎤: 'Bir zamanlar bir hayalim vardı...'";
+      }
+
+      return randomResponses[Math.floor(Math.random() * randomResponses.length)];
     }
 
     function checkEnter(event) {
